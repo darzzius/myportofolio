@@ -49,10 +49,65 @@
                     </div>
                 </div>
             </div>
+            <br>
         </section>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none"> 
+                <defs>
+                    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#d95d39" />
+                        <stop offset="100%" stop-color="#381a13" />
+                        <!-- biar ga lupa, 2 stop ini untuk menciptakan warna gradien  -->
+                    </linearGradient>
+                </defs>
+                <path d="M0,30 C300,90 600,-20 900,50 C1140,105 1320,20 1440,40 L1440,100 L0,100 Z"></path>
+                <path fill="rgba(0, 0, 0, 0.45)" d="M0,60 C360,15 620,105 920,45 C1160,85 1320,35 1440,75 L1440,140 L0,140 Z"></path>
+                <path fill="#381a13" d="M0,85 C300,135 600,30 900,85 C1140,125 1320,60 1440,80 L1440,140 L0,140 Z"></path>
+                <!-- M= Move to, C= Cubic Bézier Curve, L= Line to, Z = Close path-->
+                <!-- biar aku ga lupa!!(part 2) path ini pembuat gelombangnya. M0,30 mulai dari x=0, y= 30.  C300,90 600,-20 900,50 -> gelombang pertama,
+                dimulai dari xy 300,90 dan 600,-20 agar tercipta gelombang, lalu berakhir di 900,50. dan seterusnya untuk c yang lainnya. L1440,100 -> untuk menarik garis
+                lurus horizontal dari kanan bawah ke kiri bawah. dan last, Z kembali ke titik awal-->
+            </svg> 
+        </div>
+
+    <section class="experience-section" id="experience">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+        
+            <div class="experience-grid">
+            
+                <div class="experience-card">
+                    <span class="card-period">Apr 2026 — Present</span>
+                    <h3 class="card-role">Staff Media Partner</h3>
+                    <p class="card-org">COMPFEST</p>
+                    <p class="card-desc">
+                        Managing media partnerships, coordinating promotional campaigns, and expanding brand reach across national tech events.
+                    </p>
+                </div>
+
+                <div class="experience-card">
+                    <span class="card-period">Jul 2026 — Present</span>
+                    <h3 class="card-role">Teaching Asistant of Calculus 1</h3>
+                    <p class="card-org">Faculty of Computer Science</p>
+                    <p class="card-desc">
+                        Assisted in teaching Calculus 1 by leading pre-quiz problem-solving sessions, answering student questions, and grading coursework.
+                    </p>
+                </div>
+
+                <div class="experience-card">
+                    <span class="card-period">Agt 2025 — Okt 2025</span>
+                    <h3 class="card-role">Owner & Mentor</h3>
+                    <p class="card-org">Kelas Kita Academy</p>
+                    <p class="card-desc">
+                        Founded an independent tutoring initiative, mentoring high school students in quantitative and logic fundamentals.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" color>
         <div class="container">
             <p>&copy; 2026 Darius. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
         </div>
