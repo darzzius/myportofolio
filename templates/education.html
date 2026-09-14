@@ -1,77 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Education - {{ name }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body class="page-dark-layout">
-    <header class="site-header">
-        <div class="container">
-            <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
-            <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-                <a href="{% url 'main:show_education' %}" class="nav-active">Education</a>
-            </nav>
-        </div>
-    </header>
-
-    <div class="wave-divider">
-        <svg viewBox="0 0 1440 100" preserveAspectRatio="none"> 
-            <defs>
-                <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#d95d39" />
-                    <stop offset="100%" stop-color="#542115" />
-                </linearGradient>
-            </defs>
-            <path d="M0,30 C300,90 600,-20 900,50 C1140,105 1320,20 1440,40 L1440,100 L0,100 Z"></path>
-            <path fill="rgba(0, 0, 0, 0.45)" d="M0,60 C360,15 620,105 920,45 C1160,85 1320,35 1440,75 L1440,140 L0,140 Z"></path>
-            <path fill="#381a13" d="M0,85 C300,135 600,30 900,85 C1140,125 1320,60 1440,80 L1440,140 L0,140 Z"></path>
-        </svg> 
-    </div>
-
-    <main class="main-experience">
-        <section class="experience-section" id="education">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Education - {{ name }}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+    <body class="page-dark-layout">
+        <header class="site-header">
             <div class="container">
-                <h2 class="section-title">Education</h2>
-
-                <div class="timeline">
-                    {% for edu in education_list %}
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            
-                            <article class="experience-card">
-                                <div class="edu-card-header">
-                                    <h3 class="experience-title">{{ edu.institution }}</h3>
-                                    <p class="edu-sub">
-                                        {{ edu.degree }} &bull; {{ edu.start_year }} &mdash; {{ edu.end_year }}
-                                    </p>
-                                </div>
-
-                                <p class="experience-description">
-                                    {{ edu.description }}
-                                </p>
-                            </article>
-                        </div>
-                    {% empty %}
-                        <div class="empty-state">
-                            <p>Belum ada riwayat pendidikan yang ditambahkan.</p>
-                        </div>
-                    {% endfor %}
-                </div>
+                <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
+                <nav>
+                    <a href="{% url 'main:show_main' %}">Profile</a>
+                    <a href="{% url 'main:show_experience' %}">Experience</a>
+                    <a href="{% url 'main:show_education' %}">Education</a>
+                </nav>
             </div>
-        </section>
-    </main>
+        </header>
 
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none"> 
+                <defs>
+                    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#d95d39" />
+                        <stop offset="100%" stop-color="#542115" />
+                    </linearGradient>
+                </defs>
+                <path d="M0,30 C300,90 600,-20 900,50 C1140,105 1320,20 1440,40 L1440,100 L0,100 Z"></path>
+                <path fill="rgba(0, 0, 0, 0.45)" d="M0,60 C360,15 620,105 920,45 C1160,85 1320,35 1440,75 L1440,140 L0,140 Z"></path>
+                <path fill="#381a13" d="M0,85 C300,135 600,30 900,85 C1140,125 1320,60 1440,80 L1440,140 L0,140 Z"></path>
+            </svg> 
         </div>
-    </footer>
-</body>
+
+        <main class="main-experience">
+            <section class="experience-section" id="education">
+                <div class="container">
+                    <h2 class="section-title">Education</h2>
+
+                    <div class="timeline">
+                        {% for edu in education_list %}
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                
+                                <article class="experience-card">
+                                    <div class="edu-card-header">
+                                        <h3 class="experience-title">{{ edu.institution }}</h3>
+                                        <p class="edu-sub">
+                                            {{ edu.degree }} &bull; {{ edu.start_year }} &mdash; {{ edu.end_year }}
+                                        </p>
+                                    </div>
+
+                                    <p class="experience-description">
+                                        {{ edu.description }}
+                                    </p>
+                                </article>
+                            </div>
+                        {% empty %}
+                            <div class="empty-state">
+                                <p>Belum ada riwayat pendidikan yang ditambahkan.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+            </div>
+        </footer>
+    </body>
 </html>

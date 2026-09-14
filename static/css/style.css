@@ -5,20 +5,23 @@
 }
 
 :root {
-    --ink: #1c1917;
+    --bg-dark: #0a0a0c;
+    --bg-card: #12100e;
     --paper: #faf6f0;
     --accent: #d95d39;
     --accent-dark: #a8442a;
-    --line: #e3d9c9;
-    --text-muted: #6b6459;
+    --crimson: #c91818;
+    --line: rgba(255, 255, 255, 0.1);
+    --text-muted: #a1a1aa;
     --radius: 4px;
 }
 
 body {
     font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--ink);
-    background-color: var(--paper);
+    color: var(--paper);
+    background-color: var(--bg-dark);
     line-height: 1.6;
+    min-height: 100vh;
 }
 
 h1, .brand {
@@ -32,7 +35,10 @@ h1, .brand {
 }
 
 .site-header {
+    background-color: var(--bg-dark);
     border-bottom: 1px solid var(--line);
+    position: relative;
+    z-index: 10;
 }
 
 .site-header .container {
@@ -45,7 +51,7 @@ h1, .brand {
 .brand {
     font-size: 1.3rem;
     font-weight: 700;
-    color: var(--ink);
+    color: var(--paper);
     text-decoration: none;
 }
 
@@ -55,13 +61,86 @@ h1, .brand {
 }
 
 .site-header nav a {
-    color: var(--ink);
+    color: var(--text-muted);
     text-decoration: none;
     font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.site-header nav a:hover,
+.site-header nav a.nav-active {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.hero-logo-wrapper {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 75vh;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+    box-sizing: border-box;
+}
+
+.hero-logo-img {
+    width: 100%;
+    max-width: 650px; 
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    user-select: none;
+    filter: drop-shadow(0 0 35px rgba(217, 93, 57, 0.4));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.hero-logo-img:hover {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 50px rgba(217, 93, 57, 0.65));
+}
+
+.wave-divider {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    background-color: var(--bg-dark);
+    margin-bottom: -1px; 
+}
+
+.wave-divider svg {
+    display: block;
+    width: 100%;
+    height: 140px;
+}
+
+.wave-divider-bottom {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    background-color: #e2e8f0;
+    margin-bottom: -1px;       
+}
+
+.wave-divider-bottom svg {
+    display: block;
+    width: 100%;
+    height: 130px;
 }
 
 .hero {
-    padding: 4.5rem 0 5rem;
+    background-color: #e2e8f0; 
+    color: #0f172a;           
+    padding: 3.5rem 0 5.5rem;
+    border-top: none;
 }
 
 .hero-grid {
@@ -83,9 +162,9 @@ h1, .brand {
 
 .hero-kicker {
     font-size: 0.85rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--accent-dark);
+    color: var(--crimson);
     font-weight: 700;
     margin-bottom: 0.75rem;
 }
@@ -93,10 +172,11 @@ h1, .brand {
 .hero-identity h1 {
     font-size: clamp(3rem, 7vw, 5rem);
     line-height: 0.95;
+    color: #0f172a;
 }
 
 .bio {
-    color: var(--text-muted);
+    color: #334155;           
     max-width: 480px;
     margin-bottom: 1.5rem;
 }
@@ -111,12 +191,13 @@ h1, .brand {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--text-muted);
+    color: #64748b;
     margin-bottom: 0.15rem;
 }
 
 .meta-row dd {
     font-weight: 600;
+    color: #0f172a;
 }
 
 .social-links {
@@ -130,15 +211,19 @@ h1, .brand {
     font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
-    color: var(--paper);
-    background-color: var(--ink);
+    color: #f8fafc;
+    background-color: #0f172a;
+    border: 1px solid #0f172a;
     border-radius: var(--radius);
     padding: 0.5rem 1.1rem;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .social-link:hover {
-    background-color: var(--accent);
+    background-color: var(--crimson);
+    border-color: var(--crimson);
+    box-shadow: 0 4px 15px rgba(201, 24, 24, 0.35);
+    transform: translateY(-2px);
 }
 
 .hero-photo {
@@ -153,9 +238,10 @@ h1, .brand {
     left: 1.25rem;
     width: 100%;
     height: 100%;
-    background-color: var(--accent);
+    background-color: var(--crimson);
     border-radius: var(--radius);
     z-index: 0;
+    box-shadow: 0 10px 25px rgba(201, 24, 24, 0.3);
 }
 
 .avatar {
@@ -166,36 +252,16 @@ h1, .brand {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: var(--radius);
-    border: 3px solid var(--ink);
+    border: 3px solid #0f172a;
 }
 
-.site-footer {
-    background-color: #000000;
-    color: rgba(250, 246, 240, 0.5);
-    font-size: 0.85rem;
-    padding: 2rem 0;
-    border-top: 1px solid rgba(227, 217, 201, 0.1);
+.experience-section {
+    background: linear-gradient(180deg, #a8442a 0%, #1a0b07 35%, var(--bg-dark) 75%, var(--bg-dark) 100%);
+    color: var(--paper);
+    padding: 3.5rem 0 6rem;
+    border-top: none;
 }
 
-@media (max-width: 600px) {
-    .hero-grid {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "identity"
-            "photo"
-            "details";
-    }
-
-    .hero-photo {
-        max-width: 220px;
-    }
-
-    .social-links {
-        justify-content: flex-start;
-    }
-}
-
-/*Section khusus experience*/
 .experience-section .section-title {
     font-size: clamp(2rem, 4vw, 2.75rem);
     text-align: center;
@@ -212,7 +278,7 @@ h1, .brand {
 }
 
 .experience-card {
-    background-color: #12100e; /* Cokelat-hitam sangat gelap agar kartunya tetap terlihat */
+    background-color: var(--bg-card);
     border: 1px solid rgba(227, 217, 201, 0.12);
     border-radius: var(--radius);
     padding: 2rem 1.5rem;
@@ -256,58 +322,6 @@ h1, .brand {
     color: rgba(250, 246, 240, 0.8);
 }
 
-@media (max-width: 820px) {
-    .experience-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-    }
-
-    .experience-section {
-        padding: 4rem 0;
-    }
-}
-
-/* Wave Divider */
-.wave-divider {
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-    background-color: var(--paper);
-    margin-bottom: -1px; 
-}
- 
-.wave-divider svg {
-    display: block;
-    width: 100%;
-    height: 90px;
-}
-
-.wave-divider path {
-    fill: url(#waveGradient);
-}
-
-.wave-divider path:last-of-type {
-    fill: #a8442a;
-}
-
-.experience-section {
-    background: linear-gradient(180deg, #a8442a 0%, #1a0b07 35%, #000000 75%, #000000 100%);
-    color: var(--paper);
-    padding: 3.5rem 0 6rem;
-    border-top: none;
-}
-
-@media (max-width: 600px) {
-    .wave-divider svg {
-        height: 40px;
-    }
-
-    .experience-section {
-        padding: 2.5rem 0 4rem;
-    }
-}
-
-/* ini untuk bagian experience */
 .timeline {
     position: relative;
     max-width: 1000px;
@@ -372,6 +386,26 @@ h1, .brand {
     font-weight: 500;
 }
 
+.site-footer {
+    background-color: #000000;
+    color: rgba(250, 246, 240, 0.5);
+    font-size: 0.85rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--line);
+    text-align: center;
+}
+
+@media (max-width: 820px) {
+    .experience-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .experience-section {
+        padding: 4rem 0;
+    }
+}
+
 @media (max-width: 768px) {
     .timeline::before {
         left: 20px;
@@ -388,5 +422,35 @@ h1, .brand {
     .timeline-item:nth-child(even) .timeline-dot {
         left: 14px;
         right: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "identity"
+            "photo"
+            "details";
+    }
+
+    .hero-photo {
+        max-width: 220px;
+    }
+
+    .social-links {
+        justify-content: flex-start;
+    }
+
+    .wave-divider svg {
+        height: 60px;
+    }
+
+    .experience-section {
+        padding: 2.5rem 0 4rem;
+    }
+
+    .hero-logo-img {
+        max-width: 90vw;
     }
 }

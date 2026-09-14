@@ -1,120 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ name }} - Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header class="site-header">
-        <div class="container">
-            <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
-            <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-                <a href="{% url 'main:show_education' %}" class="nav-active">Education</a>
-            </nav>
-        </div>
-    </header>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ name }} - Portfolio</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="container">
+                <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
+                <nav>
+                    <a href="{% url 'main:show_main' %}">Profile</a>
+                    <a href="{% url 'main:show_experience' %}">Experience</a>
+                    <a href="{% url 'main:show_education' %}">Education</a>
+                </nav>
+            </div>
+        </header>
 
+        <main>
+            <div class="logo-box">
+                <img class="hero-logo-img" src="/static/img/logo_darius.png" alt="Darius Logo">
+            </div>
+            <div class="wave-divider">
+                <svg viewBox="0 0 1440 100" preserveAspectRatio="none"> 
+                    <defs>
+                        <linearGradient id="backWaveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#64748b" />
+                            <stop offset="100%" stop-color="#475569" />
+                        </linearGradient>
 
-    <main>
-        <section class="hero" id="profile">
-            <div class="container hero-grid">
-                <div class="hero-identity">
-                    <p class="hero-kicker">Information System &middot; Universitas Indonesia</p>
-                    <h1>{{ name }}</h1>
-                </div>
-                <div class="hero-photo">
-                    <div class="photo-block"></div>
-                    <img class="avatar" src="/static/img/darius.jpg" alt="Photo of {{ name }}">
-                </div>
-                <div class="hero-details">
-                    <p class="bio">{{ bio }}</p>
-                    <dl class="meta-list">
-                        <div class="meta-row">
-                            <dt>NPM</dt>
-                            <dd>{{ npm }}</dd>
+                        <linearGradient id="frontWaveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#cbd5e1" />
+                            <stop offset="100%" stop-color="#ffffff" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#backWaveGrad)" d="M0,30 C300,90 600,-20 900,50 C1140,105 1320,20 1440,40 L1440,100 L0,100 Z"></path>
+                    <path fill="#94a3b8" opacity="0.75" d="M0,60 C360,15 620,105 920,45 C1160,85 1320,35 1440,75 L1440,140 L0,140 Z"></path>
+                    <path fill="url(#frontWaveGrad)" d="M0,85 C300,135 600,30 900,85 C1140,125 1320,60 1440,80 L1440,140 L0,140 Z"></path>
+                </svg> 
+            </div>
+            <section class="hero" id="profile">
+                <div class="container hero-grid">
+                    <div class="hero-identity">
+                        <p class="hero-kicker">Information System &middot; Universitas Indonesia</p>
+                        <h1>{{ name }}</h1>
+                    </div>
+                    <div class="hero-photo">
+                        <img class="avatar" src="/static/img/darius.jpg" alt="Photo of {{ name }}">
+                    </div>
+                    <div class="hero-details">
+                        <p class="bio">{{ bio }}</p>
+                        <dl class="meta-list">
+                            <div class="meta-row">
+                                <dt>NPM</dt>
+                                <dd>{{ npm }}</dd>
+                            </div>
+                            <div class="meta-row">
+                                <dt>Program</dt>
+                                <dd>{{ study_program }}</dd>
+                            </div>
+                        </dl>
+                        <div class="social-links">
+                            <a href="https://github.com/darzzius" class="social-link">GitHub</a>
+                            <a href="https://linkedin.com/in/rafael-darius-sagala" class="social-link">LinkedIn</a>
+                            <a href="mailto:dariussagala0507@gmail.com" class="social-link">Email</a>
                         </div>
-                        <div class="meta-row">
-                            <dt>Program</dt>
-                            <dd>{{ study_program }}</dd>
-                        </div>
-                    </dl>
-                    <div class="social-links">
-                        <a href="https://github.com/darzzius" class="social-link">GitHub</a>
-                        <a href="https://linkedin.com/in/rafael-darius-sagala" class="social-link">LinkedIn</a>
-                        <a href="mailto:dariussagala0507@gmail.com" class="social-link">Email</a>
                     </div>
                 </div>
+                <br>
+            </section>
+            <div class="wave-divider-bottom">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+                <path fill="#000000" d="M0,35 C320,135 600,-10 920,85 C1180,145 1340,15 1440,45 L1440,150 L0,150 Z"></path>
+            </svg>
+        </div>
+        </main>
+
+        <footer class="site-footer" color>
+            <div class="container">
+                <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
             </div>
-            <br>
-        </section>
-        <div class="wave-divider">
-            <svg viewBox="0 0 1440 100" preserveAspectRatio="none"> 
-                <defs>
-                    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#d95d39" />
-                        <stop offset="100%" stop-color="#381a13" />
-                        <!-- biar ga lupa, 2 stop ini untuk menciptakan warna gradien  -->
-                    </linearGradient>
-                </defs>
-                <path d="M0,30 C300,90 600,-20 900,50 C1140,105 1320,20 1440,40 L1440,100 L0,100 Z"></path>
-                <path fill="rgba(0, 0, 0, 0.45)" d="M0,60 C360,15 620,105 920,45 C1160,85 1320,35 1440,75 L1440,140 L0,140 Z"></path>
-                <path fill="#381a13" d="M0,85 C300,135 600,30 900,85 C1140,125 1320,60 1440,80 L1440,140 L0,140 Z"></path>
-                <!-- M= Move to, C= Cubic Bézier Curve, L= Line to, Z = Close path-->
-                <!-- biar aku ga lupa!!(part 2) path ini pembuat gelombangnya. M0,30 mulai dari x=0, y= 30.  C300,90 600,-20 900,50 -> gelombang pertama,
-                dimulai dari xy 300,90 dan 600,-20 agar tercipta gelombang, lalu berakhir di 900,50. dan seterusnya untuk c yang lainnya. L1440,100 -> untuk menarik garis
-                lurus horizontal dari kanan bawah ke kiri bawah. dan last, Z kembali ke titik awal-->
-            </svg> 
-        </div>
-
-    <section class="experience-section" id="experience">
-        <div class="container">
-            <h2 class="section-title">Experience</h2>
-        
-            <div class="experience-grid">
-            
-                <div class="experience-card">
-                    <span class="card-period">Apr 2026 — Present</span>
-                    <h3 class="card-role">Staff Media Partner</h3>
-                    <p class="card-org">COMPFEST</p>
-                    <p class="card-desc">
-                        Managing media partnerships, coordinating promotional campaigns, and expanding brand reach across national tech events.
-                    </p>
-                </div>
-
-                <div class="experience-card">
-                    <span class="card-period">Jul 2026 — Present</span>
-                    <h3 class="card-role">Teaching Asistant of Calculus 1</h3>
-                    <p class="card-org">Faculty of Computer Science</p>
-                    <p class="card-desc">
-                        Assisted in teaching Calculus 1 by leading pre-quiz problem-solving sessions, answering student questions, and grading coursework.
-                    </p>
-                </div>
-
-                <div class="experience-card">
-                    <span class="card-period">Agt 2025 — Okt 2025</span>
-                    <h3 class="card-role">Owner & Mentor</h3>
-                    <p class="card-org">Kelas Kita Academy</p>
-                    <p class="card-desc">
-                        Founded an independent tutoring initiative, mentoring high school students in quantitative and logic fundamentals.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-    </main>
-
-    <footer class="site-footer" color>
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
-        </div>
-    </footer>
-</body>
+        </footer>
+    </body>
 </html>
-
