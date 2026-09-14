@@ -66,16 +66,28 @@ WSGI_APPLICATION = 'portofolio.wsgi.application'
 
 # Database
 if PRODUCTION:
+    # 1. Kunci port agar selalu angka valid 5432 (mencegah error integer)
+    raw_port = os.getenv('DB_PORT', '5432')
+    db_port = raw_port if (raw_port and raw_port.isdigit()) else '5432'
+
+    # 2. Perbaiki DB_HOST jika tidak sengaja terisi username atau tanda <
+    raw_host = os.getenv('DB_HOST', '10.119.106.139').replace('<', '').replace('>', '').strip()
+    db_host = '10.119.106.139' if (not raw_host or 'rafael' in raw_host) else raw_host
+
+    # 3. Perbaiki DB_USER jika tidak sengaja terisi alamat IP
+    raw_user = os.getenv('DB_USER', 'rafael.darius').strip()
+    db_user = 'rafael.darius' if (raw_user == '10.119.106.139' or not raw_user) else raw_user
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME'),
-            'USER': os.getenv('DB_USER'),
-            'PASSWORD': os.getenv('DB_PASSWORD'),
-            'HOST': os.getenv('DB_HOST'),
-            'PORT': os.getenv('DB_PORT'),
+            'NAME': os.getenv('DB_NAME', 'rafael.darius'),
+            'USER': db_user,
+            'PASSWORD': os.getenv('DB_PASSWORD', '4lc77JXZ'),
+            'HOST': db_host,
+            'PORT': db_port,
             'OPTIONS': {
-                'options': f"-c search_path={os.getenv('SCHEMA', 'public')}"
+                'options': f"-c search_path={os.getenv('SCHEMA', 'tutorial')}"
             }
         }
     }
