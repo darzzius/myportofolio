@@ -306,3 +306,87 @@ h1, .brand {
         padding: 2.5rem 0 4rem;
     }
 }
+
+/* ini untuk bagian experience */
+.timeline {
+    position: relative;
+    max-width: 1000px;
+    margin: 2.5rem auto 0;
+    padding: 1rem 0 3rem;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background-color: var(--accent);
+    transform: translateX(-50%);
+    opacity: 0.5;
+}
+
+.timeline-item {
+    position: relative;
+    width: 50%;
+    padding: 1.25rem 2.5rem;
+    box-sizing: border-box;
+}
+
+.timeline-item:nth-child(odd) {
+    left: 0;
+    text-align: left;
+}
+
+.timeline-item:nth-child(even) {
+    left: 50%;
+    text-align: left;
+}
+
+.timeline-dot {
+    position: absolute;
+    top: 2rem;
+    width: 14px;
+    height: 14px;
+    background-color: var(--accent);
+    border: 3px solid #000000;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 8px rgba(217, 93, 57, 0.6);
+}
+
+.timeline-item:nth-child(odd) .timeline-dot {
+    right: -7px;
+}
+
+.timeline-item:nth-child(even) .timeline-dot {
+    left: -7px;
+}
+
+.edu-sub {
+    font-size: 0.85rem;
+    color: rgba(250, 246, 240, 0.6);
+    margin-top: 0.2rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 20px;
+    }
+
+    .timeline-item {
+        width: 100%;
+        left: 0 !important;
+        padding-left: 50px;
+        padding-right: 15px;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-dot,
+    .timeline-item:nth-child(even) .timeline-dot {
+        left: 14px;
+        right: auto;
+    }
+}
