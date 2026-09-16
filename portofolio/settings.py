@@ -8,13 +8,10 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-7@&^womxrcfehev=hre5knyjecw+p5__sb#d=bn&^sft@u2+fh'
 
 DEBUG = True
@@ -23,7 +20,6 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "rafael-darius-myportofolio.pws.cs.ui
 
 PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,7 +32,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Wajib untuk static files di PWS
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,17 +60,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'portofolio.wsgi.application'
 
-# Database
 if PRODUCTION:
-    # 1. Kunci port agar selalu angka valid 5432 (mencegah error integer)
     raw_port = os.getenv('DB_PORT', '5432')
     db_port = raw_port if (raw_port and raw_port.isdigit()) else '5432'
 
-    # 2. Perbaiki DB_HOST jika tidak sengaja terisi username atau tanda <
     raw_host = os.getenv('DB_HOST', '10.119.106.139').replace('<', '').replace('>', '').strip()
     db_host = '10.119.106.139' if (not raw_host or 'rafael' in raw_host) else raw_host
 
-    # 3. Perbaiki DB_USER jika tidak sengaja terisi alamat IP
     raw_user = os.getenv('DB_USER', 'rafael.darius').strip()
     db_user = 'rafael.darius' if (raw_user == '10.119.106.139' or not raw_user) else raw_user
 
@@ -115,20 +107,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Email
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# gunakan https:// untuk trailing urlnya
+CSRF_TRUSTED_ORIGINS = ["https://rafael-darius-myportofolio.pws.cs.ui.ac.id/"]
