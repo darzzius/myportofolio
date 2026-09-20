@@ -47,3 +47,39 @@ migrate: Berfungsi untuk mengeksekusi berkas migrasi yang belum dijalankan ke da
      - Setelah menambahkan field tersebut di models.py:
        1. Jalankan python manage.py makemigrations untuk membuat berkas migrasi baru (misalnya 0002_experience_start_date.py).
        2. Jalankan python manage.py migrate untuk menerapkan kolom baru start_date tersebut ke dalam tabel database.
+
+### Tugas 3
+1. Alasan Menggunakan ModelForm:
+- ModelForm secara otomatis memetakan field input form berdasarkan definisi kolom yang sudah ada di models.py. Jadi tidak diperlukan menulis tag <input>, tipe data, dan atributnya satu per satu di HTML.
+
+- Validasi tipe data, panjang string (max_length), nilai unik (unique=True), hingga status required langsung diturunkan dari model. form.is_valid() dipanggil, otomatis memeriksa integritas data dan membersihkan input.
+
+- Data yang lolos validasi dapat langsung disimpan ke database tanpa perlu mengekstrak request.POST.get('field') secara manual satu per satu.
+
+- Django otomatis mengaitkan pesan kesalahan ke field yang bermasalah jika pengisian form tidak valid, sehingga mudah ditampilkan kembali kepada pengguna di halaman web.
+
+Tag {% csrf_token %} berfungsi melindungi aplikasi dari serangan CSRF.
+CSRF adalah serangan ketika situs jahat pihak ketiga memanfaatkan sesi autentikasi/cookie pengguna yang masih aktif untuk mengeksekusi permintaan HTTP (seperti POST untuk menghapus atau mengubah data) tanpa izin sadar dari pengguna. Django menyematkan token acak rahasia yang unik pada form. Saat form dikirimkan lewat metode POST, middleware Django mencocokkan token di payload dengan token pada sesi browser. Jika token tidak cocok atau absen, Django langsung memblokir permintaan tersebut dengan status 403 Forbidden.
+
+2.  XML menggunakan tag  berulang seperti (<title>Judul</title>), sedangkan JSON memakai format key-value ({"title": "Judul"}). Payload JSON jauh lebih kecil, sehingga transmisi data melalui jaringan berlangsung lebih cepat.
+
+JSON kompatibel langsung dengan ekosistem browser. Data JSON dapat diparsing langsung menjadi objek JavaScript menggunakan JSON.parse(), sedangkan XML membutuhkan DOMParser yang memakan lebih banyak memori dan proses komputasi.
+
+JSON mendukung tipe data standar secara langsung (string, number, boolean, array, object, dan null). Pada XML, semua nilai pada dasarnya dianggap sebagai teks (string), sehingga developer harus mengonversi tipe datanya secara manual di sisi frontend.
+
+Bahasa pemrograman modern dan framework frontend dirancang untuk mengonsumsi data berstruktur JSON.
+
+3. - HTTP Request 
+  Klien mengirimkan permintaan GET ke endpoint URL tertentu (misalnya /experience/json/).
+
+- Routing 
+Django membaca URL yang masuk dan memanggil fungsi view yang sesuai (misalnya show_experience_json).
+
+- Pengambilan Data
+View mengeksekusi query database menggunakan Django ORM, menghasilkan kumpulan objek berupa QuerySet.
+
+- Serialization
+QuerySet tersebut dimasukkan ke modul serializer Django untuk dikonversi menjadi representasi teks JSON
+
+- HTTP Response
+Data string JSON tersebut dibungkus ke dalam HttpResponse dengan header content_type="application/json", lalu dikirimkan kembali ke klien sebagai respons HTTP 200 OK.
