@@ -1,6 +1,6 @@
-from django.forms import ModelForm, TextInput, Textarea, URLInput
+from django.forms import ModelForm, TextInput, Textarea, URLInput, Select, DateTimeInput
 
-from main.models import Project, Experience
+from main.models import Project, Experience, Education
 
 class ProjectForm(ModelForm):
     class Meta:
@@ -54,4 +54,89 @@ class ProjectForm(ModelForm):
 class ExperienceForm(ModelForm):
     class Meta:
         model = Experience
-        fields = ['title', 'description', 'category', 'ended_at']
+        fields = [
+            "title",
+            "description",
+            "category",
+            "ended_at",
+        ]
+
+        labels = {
+            "title": "Nama Posisi / Peran",
+            "description": "Deskripsi Pengalaman",
+            "category": "Kategori Pengalaman",
+            "ended_at": "Tanggal Selesai",
+        }
+
+        widgets = {
+            "title": TextInput(
+                attrs={
+                    "placeholder": "Contoh: Asisten Dosen Kalkulus 1",
+                    "maxlength": 255,
+                }
+            ),
+            "description": Textarea(
+                attrs={
+                    "placeholder": "Ceritakan tanggung jawab dan peranmu di sini...",
+                    "rows": 3,
+                }
+            ),
+            "category": Select(),
+            "ended_at": DateTimeInput(
+                attrs={
+                    "type": "datetime-local",
+                }
+            ),
+        }
+
+class EducationForm(ModelForm):
+    class Meta:
+        model = Education
+        fields = [
+            "institution",
+            "degree",
+            "start_year",
+            "end_year",
+            "description",
+        ]
+
+        labels = {
+            "institution": "Nama Institusi",
+            "degree": "Jurusan / Jenjang",
+            "start_year": "Tahun Mulai",
+            "end_year": "Tahun Selesai",
+            "description": "Deskripsi",
+        }
+
+        widgets = {
+            "institution": TextInput(
+                attrs={
+                    "placeholder": "Contoh: Universitas Indonesia",
+                    "maxlength": 255,
+                }
+            ),
+            "degree": TextInput(
+                attrs={
+                    "placeholder": "Contoh: S1 Sistem Informasi",
+                    "maxlength": 255,
+                }
+            ),
+            "start_year": TextInput(
+                attrs={
+                    "placeholder": "Contoh: 2024",
+                    "maxlength": 10,
+                }
+            ),
+            "end_year": TextInput(
+                attrs={
+                    "placeholder": "Contoh: 2028 atau Sekarang",
+                    "maxlength": 10,
+                }
+            ),
+            "description": Textarea(
+                attrs={
+                    "placeholder": "Deskripsi kegiatan akademis atau fokus studi...",
+                    "rows": 3,
+                }
+            ),
+        }

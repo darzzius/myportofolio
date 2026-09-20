@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block meta %}
+    <title>Kelola Education - {{ name }}</title>
+{% endblock meta %}
+
+{% block content %}
+    <main>
+        <section class="experience-section" id="education">
+            <div class="container">
+                <p class="section-kicker">Manajemen Riwayat Studi</p>
+                <div class="project-header">
+                    <h1>Kelola Education</h1>
+                    <a href="{% url 'main:create_education' %}"
+                       class="button project-add-button">
+                        <span aria-hidden="true">+</span>
+                        Tambah Pendidikan
+                    </a>
+                </div>
+
+                <div class="experience-grid">
+                    {% for edu in education_list %}
+                        <article class="experience-card">
+                            <h2>{{ edu.institution }}</h2>
+                            <span class="experience-category">{{ edu.degree }}</span>
+                            <p class="edu-sub">{{ edu.start_year }} &mdash; {{ edu.end_year }}</p>
+                            <p class="experience-description">{{ edu.description }}</p>
+                            
+                            <div class="project-card-actions">
+                                <div class="project-actions">
+                                    {% if edu.id %}
+                                        <a href="{% url 'main:edit_education' edu.id %}" class="button">Edit</a>
+                                        <a href="{% url 'main:delete_education' edu.id %}"
+                                           class="button button-secondary"
+                                           onclick="return confirm('Apakah Anda yakin ingin menghapus data pendidikan ini?');">
+                                            Hapus
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </article>
+                    {% empty %}
+                        <p class="empty-state">Belum ada riwayat pendidikan yang ditambahkan.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

@@ -1,0 +1,20 @@
+<div class="modal fade" id="deleteEducationModal{{ edu.id }}" tabindex="-1" aria-labelledby="deleteEducationModalLabel{{ edu.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteEducationModalLabel{{ edu.id }}">Hapus Riwayat Pendidikan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Apakah kamu yakin ingin menghapus data pendidikan di <strong>{{ edu.institution }}</strong>? Data yang dihapus tidak bisa dikembalikan.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form action="{% url 'delete_education' edu.id %}" method="POST" class="d-inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
