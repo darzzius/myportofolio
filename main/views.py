@@ -10,6 +10,16 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
 from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
 
+def is_in_editor_group(user):
+    return user.is_authenticated and user.groups.filter(name="Editor").exists()
+
+def get_user_role_context(user):
+    """Mengembalikan dictionary context peran pengguna untuk template."""
+    return {
+        "is_editor": is_in_editor_group(user),
+        "is_owner": user.is_authenticated and user.is_superuser,
+    }
+
 def show_main(request):
     last_login = request.COOKIES.get('last_login', 'Belum ada sesi login / Cookie tidak ditemukan')
     context = {
@@ -36,8 +46,14 @@ def show_experience(request):
     }
     return render(request, "experience.html", context)
 
-
+@login_required(login_url="/login/")
 def show_edit_experience(request):
+    # Dua baris berikut yang ditambahkan pada langkah ini.
+        # Cek apakah akun yang sedang login adalah superuser (admin/kamu);
+        # kalau bukan, hentikan permintaannya dengan 403.
+    if not (request.user.is_superuser or is_in_editor_group(request.user)):
+        raise PermissionDenied
+    
     experiences = Experience.objects.all()
     context = {
         "name": "Rafael Darius Sagala",
@@ -45,8 +61,10 @@ def show_edit_experience(request):
     }
     return render(request, "edit_experience.html", context)
 
-
+@login_required(login_url="/login/")
 def create_experience(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     form = ExperienceForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -60,8 +78,11 @@ def create_experience(request):
     }
     return render(request, "experience_form.html", context)
 
-
+@login_required(login_url="/login/")
 def edit_experience(request, experience_id):
+    if not (request.user.is_superuser or is_in_editor_group(request.user)):
+        raise PermissionDenied
+    
     experience = get_object_or_404(Experience, pk=experience_id)
     form = ExperienceForm(request.POST or None, instance=experience)
 
@@ -77,8 +98,11 @@ def edit_experience(request, experience_id):
     }
     return render(request, "experience_form.html", context)
 
-
+@login_required(login_url="/login/")
 def delete_experience(request, experience_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     experience = get_object_or_404(Experience, pk=experience_id)
     experience.delete()
     messages.success(request, "Pengalaman berhasil dihapus!")
@@ -92,8 +116,11 @@ def show_education(request):
     }
     return render(request, "education.html", context)
 
-
+@login_required(login_url="/login/")
 def show_edit_education(request):
+    if not (request.user.is_superuser or is_in_editor_group(request.user)):
+        raise PermissionDenied
+    
     educations = Education.objects.all()
     context = {
         "name": "Rafael Darius Sagala",
@@ -101,8 +128,11 @@ def show_edit_education(request):
     }
     return render(request, "edit_education.html", context)
 
-
+@login_required(login_url="/login/")
 def create_education(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
     form = EducationForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -116,8 +146,11 @@ def create_education(request):
     }
     return render(request, "education_form.html", context)
 
-
+@login_required(login_url="/login/")
 def edit_education(request, education_id):
+    if not (request.user.is_superuser or is_in_editor_group(request.user)):
+        raise PermissionDenied
+    
     education = get_object_or_404(Education, pk=education_id)
     form = EducationForm(request.POST or None, instance=education)
 
@@ -133,8 +166,11 @@ def edit_education(request, education_id):
     }
     return render(request, "education_form.html", context)
 
-
+@login_required(login_url="/login/")
 def delete_education(request, education_id):
+    if not request.user.is_superuser:
+            raise PermissionDenied
+    
     education = get_object_or_404(Education, pk=education_id)
     education.delete()
     messages.success(request, "Riwayat pendidikan berhasil dihapus!")
@@ -158,6 +194,27 @@ def create_project(request):
     context = {
         "name": "Rafael Darius Sagala",
         "form": form,
+    }
+    return render(request, "projects_form.html", context)
+
+@login_required(login_url="/login/")
+def edit_project(request, project_id):
+    if not (request.user.is_superuser or is_in_editor_group(request.user)):
+        raise PermissionDenied
+
+    project = get_object_or_404(Project, pk=project_id)
+    form = ProjectForm(request.POST or None, instance=project)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Proyek berhasil diperbarui!")
+        return redirect("main:show_projects")
+
+    context = {
+        "name": "Rafael Darius Sagala",
+        "form": form,
+        "project": project,
+        **get_user_role_context(request.user),
     }
     return render(request, "projects_form.html", context)
 
