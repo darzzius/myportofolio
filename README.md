@@ -83,3 +83,14 @@ QuerySet tersebut dimasukkan ke modul serializer Django untuk dikonversi menjadi
 
 - HTTP Response
 Data string JSON tersebut dibungkus ke dalam HttpResponse dengan header content_type="application/json", lalu dikirimkan kembali ke klien sebagai respons HTTP 200 OK.
+
+## Tugas 5
+1. Debouncing adalah teknik optimasi pemrograman yang menunda pemanggilan suatu fungsi hingga jeda waktu tertentu berlalu sejak aksi terakhir kali dipicu. Pada kolom pencarian, jika setiap ketukan tombol pengguna langsung mengeksekusi panggilan AJAX, browser akan mengirimkan belasan permintaan HTTP yang membebani server dan jaringan. Dengan debouncing, browser hanya akan mengirimkan satu permintaan HTTP setelah pengguna berhenti mengetik selama interval tertentu, sehingga mengurangi beban server pada hasil pencarian.
+
+2. fetch() merupakan fungsi asinkron berbasis Promise. Kata kunci await berfungsi untuk menjeda eksekusi kode di dalam blok async function hingga Promise tersebut selesai diproses (resolved) dan menghasilkan objek Response secara riil. Jika kita tidak menggunakan, variabel penerima tidak akan berisi data hasil respons, melainkan instansi objek Promise <pending>. Akibatnya, baris kode berikutnya akan langsung dieksekusi sebelum data tiba dari server, yang memicu runtime erroratau menghasilkan data undefined.
+
+3. Serangan XSS Cross-Site Scripting terjadi ketika pihak luar berhasil menyisipkan skrip berbahaya ke dalam halaman web yang kemudian dieksekusi oleh peramban pengguna lain. Pada template standar Django, sistem memiliki mekanisme pertahanan otomatis berupa auto-escaping yang mengubah karakter spesial seperti <, >, &, ", dan ' menjadi entitas HTML aman. Sebaliknya, ketika menggunakan AJAX di sisi klien, manipulasi DOM sering kali dilakukan dengan menyusun teks HTML manual lalu memasukkannya ke properti seperti .innerHTML. Jika data dari server tidak diescape secara eksplisit sebelum disisipkan ke .innerHTML, browser akan menginterpretasikan tag HTML/JS tersebut sebagai kode sungguhan dan mengeksekusinya, sehingga membuka celah eksploitasi data sensitif seperti pencurian token CSRF atau sesi.
+
+PENGGUNAAN AI.
+
+Saya menggunakan AI untuk membantu saya dalam pengeditan CSS, karena saya sedikit bingung bagian mana yang perlu diganti. saya mengirim file style.css ke AI dan melakukan prompt "saya baru saja mengganti bagian toast menyesuaikan dengan warna yang saya gunakan pada bagian lainnya. namun mengapa warnanya tidak berubah sama sekali? bagian mana yang miss?" Lalu AI membantu saya mengatasi kekeliruan saya dalam pengeditan style.css
