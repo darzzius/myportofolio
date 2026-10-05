@@ -35,6 +35,10 @@ class Education(models.Model):
     end_year = models.CharField(max_length=20, default="Present")
     description = models.TextField()
 
+    starred_by = models.ManyToManyField(
+      User, related_name="starred_educations", blank=True
+    )
+    
     def __str__(self):
         return self.institution
 
