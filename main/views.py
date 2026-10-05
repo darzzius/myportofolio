@@ -31,6 +31,7 @@ def show_main(request):
             "Computer Science undergraduate at Universitas Indonesia with a keen focus on financial markets, equity analysis, and business strategy. Proven track record in competitive stock trading and digital initiatives, passionate about bridging quantitative technology with capital market insights. "
         ),
         "last_login": last_login,
+        **get_user_role_context(request.user),
     }
     return render(request, "index.html", context)
 
@@ -46,6 +47,17 @@ def show_experience(request):
         "experience_list": experiences,
     }
     return render(request, "experience.html", context)
+
+@login_required(login_url="/login/")
+@require_POST
+def toggle_star_education(request, education_id):
+    education = get_object_or_404(Education, pk=education_id)
+    if request.user in education.starred_by.all():
+        education.starred_by.remove(request.user)
+    else:
+        education.starred_by.add(request.user)
+    
+    return redirect("main:show_education")
 
 @login_required(login_url="/login/")
 def show_edit_experience(request):
@@ -109,11 +121,49 @@ def delete_experience(request, experience_id):
     messages.success(request, "Pengalaman berhasil dihapus!")
     return redirect("main:show_edit_experience")
 
+def get_education_json(request):
+    search_query = request.GET.get("q", "").strip()
+    educations = Education.objects.prefetch_related("starred_by").all()
+
+    if search_query:
+        educations = educations.filter(
+            institution__icontains=search_query
+        ) | educations.filter(degree__icontains=search_query)
+
+    # Urutkan berdasarkan tahun terbaru
+    educations = educations.order_by("-start_year")
+
+    data = []
+    for edu in educations:
+        starred_users = edu.starred_by.all()
+        is_starred = (
+            request.user in starred_users if request.user.is_authenticated else False
+        )
+        starred_by_names = ", ".join([u.username for u in starred_users])
+
+        data.append({
+            "pk": str(edu.id),
+            "fields": {
+                "institution": edu.institution,
+                "degree": edu.degree,
+                "start_year": edu.start_year,
+                "end_year": edu.end_year,
+                "description": edu.description,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            },
+        })
+
+    return JsonResponse(data, safe=False)
+
 def show_education(request):
-    educations = Education.objects.all()
+    search_query = request.GET.get("q", "").strip()
     context = {
         "name": "Rafael Darius Sagala",
-        "education_list": educations,
+        "search_query": search_query,
+        "form": EducationForm(), 
+        **get_user_role_context(request.user),
     }
     return render(request, "education.html", context)
 
@@ -341,6 +391,32 @@ def create_project_ajax(request):
         project = form.save()
         return JsonResponse(
             {"message": "Proyek berhasil ditambahkan.", "pk": str(project.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_education_ajax(request):
+    if not (request.user.is_authenticated and request.user.is_superuser):
+        return JsonResponse(
+            {
+                "message": (
+                    "403 Forbidden: Hanya pemilik portofolio yang dapat menambahkan"
+                    " data pendidikan."
+                )
+            },
+            status=403,
+        )
+
+    form = EducationForm(request.POST)
+    if form.is_valid():
+        education = form.save()
+        return JsonResponse(
+            {
+                "message": "Riwayat pendidikan berhasil ditambahkan!",
+                "pk": str(education.id),
+            },
             status=201,
         )
 
