@@ -103,6 +103,18 @@ class ExperienceForm(ModelForm):
             ),
         }
 
+    def clean_title(self):
+        title = strip_tags(self.cleaned_data["title"]).strip()
+        if not title:
+            raise ValidationError("Judul pengalaman tidak boleh hanya berisi tag HTML.")
+        return title
+
+    def clean_description(self):
+        return strip_tags(self.cleaned_data["description"]).strip()
+
+    def clean_category(self):
+        return strip_tags(self.cleaned_data["category"]).strip()    
+
 class EducationForm(ModelForm):
     class Meta:
         model = Education

@@ -35,6 +35,53 @@ def show_main(request):
     }
     return render(request, "index.html", context)
 
+def get_experience_json(request):
+    search_query = request.GET.get("q", "").strip()
+    experiences = Experience.objects.prefetch_related("starred_by").all()
+
+    if search_query:
+        experiences = experiences.filter(
+            title__icontains=search_query
+        ) | experiences.filter(category__icontains=search_query)
+
+    experiences = experiences.order_by("-started_at")
+
+    data = []
+    for exp in experiences:
+        starred_users = exp.starred_by.all()
+        is_starred = (
+            request.user in starred_users if request.user.is_authenticated else False
+        )
+        starred_by_names = ", ".join([u.username for u in starred_users])
+
+        data.append({
+            "pk": str(exp.id),
+            "fields": {
+                "title": exp.title,
+                "description": exp.description,
+                "category": exp.get_category_display(),
+                "ended_at": (
+                    exp.ended_at.strftime("%b %Y") if exp.ended_at else "Sekarang"
+                ),
+                "is_ongoing": exp.is_ongoing,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            },
+        })
+
+    return JsonResponse(data, safe=False)
+
+@login_required(login_url="/login/")
+@require_POST
+def toggle_star_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+    if request.user in experience.starred_by.all():
+        experience.starred_by.remove(request.user)
+    else:
+        experience.starred_by.add(request.user)
+
+    return redirect("main:show_experience")
 
 def show_experience_json(request):
     experiences = Experience.objects.all()
@@ -45,6 +92,8 @@ def show_experience(request):
     context = {
         "name": "Rafael Darius Sagala",
         "experience_list": experiences,
+        "form": ExperienceForm(),
+        **get_user_role_context(request.user),
     }
     return render(request, "experience.html", context)
 
@@ -56,7 +105,7 @@ def toggle_star_education(request, education_id):
         education.starred_by.remove(request.user)
     else:
         education.starred_by.add(request.user)
-    
+     
     return redirect("main:show_education")
 
 @login_required(login_url="/login/")
@@ -416,6 +465,32 @@ def create_education_ajax(request):
             {
                 "message": "Riwayat pendidikan berhasil ditambahkan!",
                 "pk": str(education.id),
+            },
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_experience_ajax(request):
+    if not (request.user.is_authenticated and request.user.is_superuser):
+        return JsonResponse(
+            {
+                "message": (
+                    "403 Forbidden: Hanya pemilik portofolio yang dapat menambahkan"
+                    " pengalaman."
+                )
+            },
+            status=403,
+        )
+
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse(
+            {
+                "message": "Pengalaman berhasil ditambahkan!",
+                "pk": str(experience.id),
             },
             status=201,
         )
