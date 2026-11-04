@@ -44,27 +44,38 @@ class MainTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "experience.html")
-        self.assertContains(response, self.experience.title)
-        self.assertContains(response, self.experience.description)
-        self.assertContains(response, "Part-Time")
-        self.assertContains(response, "Sedang berlangsung")
+        self.assertContains(response, 'id="experience-grid"')
+        self.assertContains(response, reverse("main:get_experience_json"))
         self.assertContains(response, f'href="{reverse("main:show_main")}"')
         self.assertContains(response, f'href="{reverse("main:show_education")}"')
+
+        # The browser fetches the cards separately; Django's client does not run JS.
+        data = self.client.get(reverse("main:get_experience_json")).json()
+        item = next(item for item in data if item["pk"] == str(self.experience.pk))
+        self.assertEqual(item["fields"]["title"], self.experience.title)
+        self.assertEqual(item["fields"]["description"], self.experience.description)
+        self.assertEqual(item["fields"]["category"], "Part-Time")
+        self.assertTrue(item["fields"]["is_ongoing"])
 
     def test_empty_experience_page(self):
         Experience.objects.all().delete()
         response = self.client.get(reverse("main:show_experience"))
 
-        self.assertContains(response, "Belum ada pengalaman yang ditambahkan.")
+        self.assertContains(response, "Belum ada pengalaman yang ditambahkan atau ditemukan.")
+        response = self.client.get(reverse("main:get_experience_json"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
 
     def test_completed_experience(self):
         self.experience.ended_at = timezone.now()
         self.experience.save()
-        response = self.client.get(reverse("main:show_experience"))
+        response = self.client.get(reverse("main:get_experience_json"))
 
         self.assertFalse(self.experience.is_ongoing)
-        self.assertContains(response, "Selesai")
-        self.assertNotContains(response, "Sedang berlangsung")
+        self.assertEqual(response.status_code, 200)
+        item = next(item for item in response.json() if item["pk"] == str(self.experience.pk))
+        self.assertFalse(item["fields"]["is_ongoing"])
+        self.assertEqual(item["fields"]["ended_at"], self.experience.ended_at.strftime("%b %Y"))
 
     def test_education_model(self):
         self.assertEqual(str(self.education), "Universitas Indonesia")
@@ -77,14 +88,22 @@ class MainTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "education.html")
-        self.assertContains(response, self.education.institution)
-        self.assertContains(response, self.education.degree)
-        self.assertContains(response, self.education.description)
+        self.assertContains(response, 'id="education-timeline"')
+        self.assertContains(response, reverse("main:get_education_json"))
         self.assertContains(response, f'href="{reverse("main:show_main")}"')
         self.assertContains(response, f'href="{reverse("main:show_experience")}"')
+
+        data = self.client.get(reverse("main:get_education_json")).json()
+        item = next(item for item in data if item["pk"] == str(self.education.pk))
+        self.assertEqual(item["fields"]["institution"], self.education.institution)
+        self.assertEqual(item["fields"]["degree"], self.education.degree)
+        self.assertEqual(item["fields"]["description"], self.education.description)
 
     def test_empty_education_page(self):
         Education.objects.all().delete()
         response = self.client.get(reverse("main:show_education"))
 
-        self.assertContains(response, "Belum ada riwayat pendidikan yang ditambahkan.")
+        self.assertContains(response, "Belum ada riwayat pendidikan yang ditambahkan atau ditemukan.")
+        response = self.client.get(reverse("main:get_education_json"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])

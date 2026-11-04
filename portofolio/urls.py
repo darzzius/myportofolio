@@ -9,3 +9,8 @@ urlpatterns = [
     path("", include("main.urls")),
     path("projects/add/", create_project, name="create_project"),
 ]
+
+urlpatterns += [
+    path("api/v1/", include("main.api_urls")),
+    path("api-auth/", include("rest_framework.urls")),
+]
