@@ -10,6 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required  # Tambahkan baris ini
 from django.core.exceptions import PermissionDenied        # Tambahkan baris ini
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 def is_in_editor_group(user):
     return user.is_authenticated and user.groups.filter(name="Editor").exists()
@@ -87,12 +88,14 @@ def show_experience_json(request):
     experiences = Experience.objects.all()
     return HttpResponse(serializers.serialize("json", experiences), content_type="application/json")
 
+@ensure_csrf_cookie
 def show_experience(request):
     experiences = Experience.objects.all()
     context = {
         "name": "Rafael Darius Sagala",
         "experience_list": experiences,
         "form": ExperienceForm(),
+        "search_query": request.GET.get("q", "").strip(),
         **get_user_role_context(request.user),
     }
     return render(request, "experience.html", context)
@@ -161,6 +164,7 @@ def edit_experience(request, experience_id):
     return render(request, "experience_form.html", context)
 
 @login_required(login_url="/login/")
+@require_POST
 def delete_experience(request, experience_id):
     if not request.user.is_superuser:
         raise PermissionDenied
@@ -206,6 +210,7 @@ def get_education_json(request):
 
     return JsonResponse(data, safe=False)
 
+@ensure_csrf_cookie
 def show_education(request):
     search_query = request.GET.get("q", "").strip()
     context = {
@@ -267,6 +272,7 @@ def edit_education(request, education_id):
     return render(request, "education_form.html", context)
 
 @login_required(login_url="/login/")
+@require_POST
 def delete_education(request, education_id):
     if not request.user.is_superuser:
             raise PermissionDenied

@@ -45,7 +45,7 @@ class MainTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "experience.html")
         self.assertContains(response, 'id="experience-grid"')
-        self.assertContains(response, reverse("main:get_experience_json"))
+        self.assertContains(response, reverse("api:experience-list"))
         self.assertContains(response, f'href="{reverse("main:show_main")}"')
         self.assertContains(response, f'href="{reverse("main:show_education")}"')
 
@@ -89,7 +89,7 @@ class MainTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "education.html")
         self.assertContains(response, 'id="education-timeline"')
-        self.assertContains(response, reverse("main:get_education_json"))
+        self.assertContains(response, reverse("api:education-list"))
         self.assertContains(response, f'href="{reverse("main:show_main")}"')
         self.assertContains(response, f'href="{reverse("main:show_experience")}"')
 
