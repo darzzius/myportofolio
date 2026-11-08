@@ -1,0 +1,43 @@
+{% load static %}
+<main class="main-experience">
+    <section id="{{ section }}" class="experience-section" data-portfolio-section="{{ section }}"
+             data-list-url="{{ list_url }}" data-detail-url="{{ detail_url }}"
+             data-star-url="{{ star_url }}" data-login-url="{% url 'main:login' %}"
+             data-is-owner="{{ user.is_superuser|yesno:'true,false' }}"
+             data-is-editor="{{ is_editor|yesno:'true,false' }}"
+             data-is-authenticated="{{ user.is_authenticated|yesno:'true,false' }}"
+             data-item-label="{{ item_label }}">
+        <div class="container">
+            <div class="project-header">
+                <h1>{{ heading }}</h1>
+                {% if user.is_superuser %}
+                    <button type="button" class="button project-add-button" data-create>
+                        <span aria-hidden="true">+</span> Tambah {{ item_label }}
+                    </button>
+                {% endif %}
+            </div>
+            <form class="project-search" data-search-form role="search">
+                <input type="search" name="q" value="{{ search_query }}" data-search-input
+                       placeholder="{{ search_placeholder }}" aria-label="{{ search_placeholder }}"
+                       class="project-search__input">
+                <button type="submit" class="button">Cari</button>
+            </form>
+            <div class="empty-state" data-state="loading" role="status">
+                <p>Memuat {{ item_label }}...</p>
+            </div>
+            <div class="empty-state hide" data-state="error" role="alert">
+                <p>Gagal memuat data. Silakan coba lagi.</p>
+                <button type="button" class="button button-secondary" data-retry>Coba lagi</button>
+            </div>
+            <div class="empty-state hide" data-state="empty" role="status">
+                <p>{{ empty_message }}</p>
+            </div>
+            <div id="{{ result_id }}" class="{{ result_class }} hide" data-results></div>
+        </div>
+        {% csrf_token %}
+        {% if user.is_superuser or is_editor %}
+            {% include "components/portfolio_form_modal.html" %}
+        {% endif %}
+    </section>
+</main>
+<script src="{% static 'js/portfolio-section.js' %}" defer></script>
