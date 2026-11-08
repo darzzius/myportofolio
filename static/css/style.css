@@ -294,6 +294,8 @@ h1, .brand {
 }
 
 .experience-card {
+    min-width: 0;
+    overflow-wrap: anywhere;
     background-color: rgba(18, 17, 22, 0.88);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius);
@@ -453,6 +455,17 @@ h1, .brand {
 }
 
 @media (max-width: 820px) {
+    .site-header .container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .site-header nav {
+        flex-wrap: wrap;
+        gap: 0.6rem 1rem;
+    }
+
     .experience-grid {
         grid-template-columns: 1fr;
         gap: 1.25rem;
@@ -924,6 +937,8 @@ h1, .brand {
     inset: auto 2rem 2rem auto;
     margin: 0;
     padding: 1rem 1.5rem;
+    max-width: calc(100vw - 2rem);
+    overflow-wrap: anywhere;
     border-radius: var(--radius);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
     display: none;
