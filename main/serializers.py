@@ -1,7 +1,7 @@
 from django.utils.html import strip_tags
 from rest_framework import serializers
 
-from main.models import Education, Project
+from main.models import Education, Experience, Project
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -43,11 +43,37 @@ class ProjectSerializer(serializers.ModelSerializer):
         return ", ".join(user.username for user in obj.starred_by.all())
 
 
-class EducationSerializer(serializers.ModelSerializer):
+class StarredPortfolioSerializer(serializers.ModelSerializer):
+    """Expose star summaries without accepting account IDs from the client."""
+
     star_count = serializers.SerializerMethodField()
     is_starred = serializers.SerializerMethodField()
     starred_by_names = serializers.SerializerMethodField()
 
+    def get_star_count(self, obj):
+        return obj.starred_by.count()
+
+    def get_is_starred(self, obj):
+        request = self.context.get("request")
+        return bool(
+            request and request.user.is_authenticated
+            and any(user.pk == request.user.pk for user in obj.starred_by.all())
+        )
+
+    def get_starred_by_names(self, obj):
+        return ", ".join(user.username for user in obj.starred_by.all())
+
+    def clean_text(self, value):
+        value = strip_tags(value).strip()
+        if not value:
+            raise serializers.ValidationError("Teks tidak boleh kosong atau hanya berisi tag HTML.")
+        return value
+
+    def validate_description(self, value):
+        return self.clean_text(value)
+
+
+class EducationSerializer(StarredPortfolioSerializer):
     class Meta:
         model = Education
         fields = [
@@ -56,12 +82,34 @@ class EducationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id"]
 
-    def get_star_count(self, obj):
-        return obj.starred_by.count()
+    def validate_institution(self, value):
+        return self.clean_text(value)
 
-    def get_is_starred(self, obj):
-        request = self.context.get("request")
-        return bool(request and request.user.is_authenticated and request.user in obj.starred_by.all())
+    def validate_degree(self, value):
+        return self.clean_text(value)
 
-    def get_starred_by_names(self, obj):
-        return ", ".join(user.username for user in obj.starred_by.all())
+    def validate_start_year(self, value):
+        return self.clean_text(value)
+
+    def validate_end_year(self, value):
+        return self.clean_text(value)
+
+
+class ExperienceSerializer(StarredPortfolioSerializer):
+    category_display = serializers.CharField(source="get_category_display", read_only=True)
+    is_ongoing = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Experience
+        fields = [
+            "id", "title", "description", "category", "category_display", "thumbnail",
+            "started_at", "ended_at", "is_ongoing",
+            "star_count", "is_starred", "starred_by_names",
+        ]
+        read_only_fields = ["id", "started_at"]
+
+    def validate_title(self, value):
+        return self.clean_text(value)
+
+    def validate_category(self, value):
+        return self.clean_text(value)
