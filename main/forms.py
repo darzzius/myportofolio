@@ -156,7 +156,7 @@ class EducationForm(ModelForm):
             "end_year": TextInput(
                 attrs={
                     "placeholder": "Contoh: 2028 atau Sekarang",
-                    "maxlength": 10,
+                    "maxlength": 20,
                 }
             ),
             "description": Textarea(
