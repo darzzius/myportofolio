@@ -84,7 +84,7 @@ QuerySet tersebut dimasukkan ke modul serializer Django untuk dikonversi menjadi
 - HTTP Response
 Data string JSON tersebut dibungkus ke dalam HttpResponse dengan header content_type="application/json", lalu dikirimkan kembali ke klien sebagai respons HTTP 200 OK.
 
-## Tugas 5
+### Tugas 5
 1. Debouncing adalah teknik optimasi pemrograman yang menunda pemanggilan suatu fungsi hingga jeda waktu tertentu berlalu sejak aksi terakhir kali dipicu. Pada kolom pencarian, jika setiap ketukan tombol pengguna langsung mengeksekusi panggilan AJAX, browser akan mengirimkan belasan permintaan HTTP yang membebani server dan jaringan. Dengan debouncing, browser hanya akan mengirimkan satu permintaan HTTP setelah pengguna berhenti mengetik selama interval tertentu, sehingga mengurangi beban server pada hasil pencarian.
 
 2. fetch() merupakan fungsi asinkron berbasis Promise. Kata kunci await berfungsi untuk menjeda eksekusi kode di dalam blok async function hingga Promise tersebut selesai diproses (resolved) dan menghasilkan objek Response secara riil. Jika kita tidak menggunakan, variabel penerima tidak akan berisi data hasil respons, melainkan instansi objek Promise <pending>. Akibatnya, baris kode berikutnya akan langsung dieksekusi sebelum data tiba dari server, yang memicu runtime erroratau menghasilkan data undefined.
@@ -94,3 +94,25 @@ Data string JSON tersebut dibungkus ke dalam HttpResponse dengan header content_
 PENGGUNAAN AI.
 
 Saya menggunakan AI untuk membantu saya dalam pengeditan CSS, karena saya sedikit bingung bagian mana yang perlu diganti. saya mengirim file style.css ke AI dan melakukan prompt "saya baru saja mengganti bagian toast menyesuaikan dengan warna yang saya gunakan pada bagian lainnya. namun mengapa warnanya tidak berubah sama sekali? bagian mana yang miss?" Lalu AI membantu saya mengatasi kekeliruan saya dalam pengeditan style.css
+
+### Tugas 6
+
+1. REST (Representational State Transfer) adalah gaya arsitektur untuk mengatur komunikasi antara client dan server dengan memperlakukan data sebagai resource. Setiap resource memiliki URL, misalnya /api/v1/educations/, dan diakses menggunakan method HTTP sesuai tujuannya. GET digunakan untuk membaca data, POST untuk membuat data, PUT atau PATCH untuk mengubah data, dan DELETE untuk menghapus data. REST juga memiliki prinsip seperti pemisahan client dan server, stateless, serta penggunaan antarmuka yang konsisten.
+
+Mengembalikan JSON saja belum cukup untuk menyebut API sebagai RESTful, karena JSON hanya merupakan format pengiriman data. API juga perlu mengikuti aturan interaksi dengan resource dan semantik HTTP. Misalnya, endpoint yang menghapus pendidikan melalui GET tetap tidak sesuai dengan prinsip REST walaupun responsnya berbentuk JSON, karena GET seharusnya tidak mengubah data.
+
+PUT digunakan ketika client ingin mengirim representasi lengkap untuk mengganti data suatu resource. Contohnya, ketika memperbarui seluruh data pendidikan, client mengirim institusi, jurusan, tahun mulai, tahun selesai, dan deskripsi. Sebaliknya, PATCH digunakan untuk memperbarui sebagian atribut saja. Jika saya hanya ingin mengganti jurusan, saya cukup mengirim {"degree": "S2 Sistem Informasi"} melalui PATCH tanpa mengirim ulang field lainnya.
+
+2. Serializer pada Django REST Framework berfungsi mengubah objek model menjadi data yang dapat dikirim sebagai respons, misalnya JSON. Serializer juga digunakan untuk memvalidasi data dari client sebelum disimpan ke database. Dengan ModelSerializer, aturan seperti tipe data, panjang maksimal, dan field yang wajib diisi dapat diambil dari definisi model. Validasi tambahan bisa dibuat melalui validate_institution, misalnya membersihkan tag HTML dengan strip_tags dan menolak nama institusi yang kosong setelah dibersihkan.
+
+Dibandingkan merakit dictionary secara manual dengan JsonResponse, serializer membuat pengaturan input dan output lebih terpusat. Saya tidak perlu menulis ulang pemetaan data, validasi, dan proses penyimpanan pada setiap view. Serializer juga menyediakan pesan kesalahan per field, mendukung perubahan sebagian melalui partial=True, serta dapat menetapkan field sebagai read-only. Contohnya, star_count dan is_starred dihitung oleh server, sehingga nilainya tidak bisa diubah langsung melalui input dari client.
+
+3. Autentikasi adalah proses untuk mengetahui identitas pengguna yang mengirim request. Pada proyek ini, SessionAuthentication menggunakan sesi login Django untuk mengenali pengguna melalui request.user. Sementara itu, otorisasi adalah proses untuk menentukan tindakan yang boleh dilakukan oleh pengguna tersebut. Contohnya, Editor sudah terautentikasi dan boleh mengubah data melalui PUT atau PATCH, tetapi tetap tidak diizinkan membuat atau menghapus data seperti pemilik portofolio.
+
+Hak akses harus diperiksa melalui permission class di server karena menyembunyikan tombol di template hanya membatasi tampilan. Pengguna masih bisa mengirim request langsung melalui browser console atau aplikasi pengujian API tanpa menekan tombol pada halaman. Permission class memastikan request yang tidak sesuai dengan peran pengguna ditolak dengan status 403 sebelum data diubah. Pada endpoint star, akun pemberi star juga diambil dari request.user agar pengguna tidak dapat mengatasnamakan akun lain melalui payload.
+
+4. Permintaan yang mengubah data tetap memerlukan token CSRF ketika menggunakan SessionAuthentication karena browser dapat menyertakan cookie sesi pengguna secara otomatis. Situs lain dapat mencoba memanfaatkan sesi login yang masih aktif untuk mengirim permintaan yang tidak dikehendaki pengguna. Menggunakan JSON tidak menghilangkan risiko ini, karena autentikasinya tetap bergantung pada cookie sesi.
+
+Token CSRF menjadi nilai tambahan yang diperiksa server untuk melindungi permintaan tersebut. Pada request fetch() yang mengubah data, token dibaca dari cookie csrftoken lalu dikirim melalui header X-CSRFToken. Jika token tidak ada atau tidak sesuai pada request yang sudah terautentikasi, permintaan akan ditolak dengan status 403.
+
+Test yang memakai force_authenticate belum cukup untuk membuktikan perlindungan CSRF karena identitas pengguna dipasang langsung pada request pengujian, sehingga tidak melewati proses SessionAuthentication seperti request browser. Selain itu, test client biasa tidak mengaktifkan pemeriksaan CSRF secara default. Karena itu, pengujian perlu menggunakan APIClient(enforce_csrf_checks=True) dan .login(). Setelah login, request tanpa token harus ditolak dan isi database harus tetap sama, sedangkan request dengan token yang valid harus berhasil sesuai hak akses pengguna.
