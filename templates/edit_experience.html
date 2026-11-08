@@ -10,11 +10,13 @@
                 <p class="section-kicker">Manajemen Pengalaman</p>
                 <div class="project-header">
                     <h1>Kelola Experience</h1>
+                    {% if user.is_superuser %}
                     <a href="{% url 'main:create_experience' %}"
                        class="button project-add-button">
                         <span aria-hidden="true">+</span>
                         Tambah Pengalaman
                     </a>
+                    {% endif %}
                 </div>
 
                 <div class="experience-grid">
@@ -33,11 +35,13 @@
                                 <div class="project-actions">
                                     {% if experience.id %}
                                         <a href="{% url 'main:edit_experience' experience.id %}" class="button">Edit</a>
-                                        <a href="{% url 'main:delete_experience' experience.id %}"
-                                           class="button button-secondary"
-                                           onclick="return confirm('Apakah Anda yakin ingin menghapus pengalaman ini?');">
-                                            Hapus
-                                        </a>
+                                        {% if user.is_superuser %}
+                                            <form method="post" action="{% url 'main:delete_experience' experience.id %}"
+                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengalaman ini?');">
+                                                {% csrf_token %}
+                                                <button type="submit" class="button button-danger">Hapus</button>
+                                            </form>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -49,4 +53,4 @@
             </div>
         </section>
     </main>
-{% endblock content %}x
+{% endblock content %}
