@@ -208,14 +208,34 @@ class EducationAPIPermissionTest(APITestCase):
         before_count = Education.objects.count()
         for user in (None, self.visitor):
             self.client.force_authenticate(user=user)
+            expected = status.HTTP_401_UNAUTHORIZED if user is None else status.HTTP_403_FORBIDDEN
             with self.subTest(user=user):
-                self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, 403)
-                self.assertEqual(self.client.put(self.detail_url, self.payload, format="json").status_code, 403)
-                self.assertEqual(self.client.patch(self.detail_url, {"degree": "Changed"}, format="json").status_code, 403)
-                self.assertEqual(self.client.delete(self.detail_url).status_code, 403)
+                self.assertEqual(self.client.post(self.list_url, self.payload, format="json").status_code, expected)
+                self.assertEqual(self.client.put(self.detail_url, self.payload, format="json").status_code, expected)
+                self.assertEqual(self.client.patch(self.detail_url, {"degree": "Changed"}, format="json").status_code, expected)
+                self.assertEqual(self.client.delete(self.detail_url).status_code, expected)
         self.assertEqual(Education.objects.count(), before_count)
         self.education.refresh_from_db()
         self.assertEqual(self.education.degree, "S1")
+
+    def test_token_owner_can_create_and_revoked_token_cannot_write(self):
+        from rest_framework.authtoken.models import Token
+
+        client = APIClient(enforce_csrf_checks=True)
+        visitor_token = Token.objects.create(user=self.visitor)
+        client.credentials(HTTP_AUTHORIZATION=f"Token {visitor_token.key}")
+        self.assertEqual(client.post(self.list_url, self.payload, format="json").status_code, 403)
+
+        owner_token = Token.objects.create(user=self.owner)
+        client.credentials(HTTP_AUTHORIZATION=f"Token {owner_token.key}")
+        created = client.post(self.list_url, self.payload, format="json")
+        self.assertEqual(created.status_code, 201)
+        self.assertTrue(Education.objects.filter(pk=created.data["id"]).exists())
+        self.assertEqual(client.post(reverse("api:api_logout")).status_code, 204)
+        self.assertEqual(client.post(self.list_url, self.payload, format="json").status_code, 401)
+
+        client.credentials()
+        self.assertEqual(client.get(self.list_url).status_code, 200)
 
     def test_editor_can_patch_and_put_but_cannot_create_or_delete(self):
         self.client.force_authenticate(user=self.editor)
