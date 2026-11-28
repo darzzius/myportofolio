@@ -54,7 +54,8 @@ class PortfolioAPIChecks:
             ):
                 with self.subTest(user=user, method=method):
                     response = getattr(self.client, method)(url, payload, format="json")
-                    self.assertEqual(response.status_code, 403)
+                    expected = 401 if user is None and self.model is Education else 403
+                    self.assertEqual(response.status_code, expected)
                     self.assertEqual(self.snapshot(), before)
                     self.assertEqual(self.item.starred_by.count(), 0)
 
